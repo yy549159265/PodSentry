@@ -17,6 +17,7 @@ spec:
       initContainers:
         - name: kubeconfig-fetcher
           image: swr.cn-south-1.myhuaweicloud.com/dpc-devops/podsentry/kubeconfig-fetcher:1.0
+          imagePullPolicy: Always
           env:
             - name: RANCHER_SERVER
               value: "https://139.159.191.47:9400"
@@ -40,6 +41,7 @@ spec:
       containers:
         - name: pod-rollback
           image: swr.cn-south-1.myhuaweicloud.com/dpc-devops/podsentry/pod-rollback:1.0
+          imagePullPolicy: Always
           env:
             - name: MONITOR_NAMESPACE
               value: "tools-dev"
@@ -57,8 +59,8 @@ spec:
               value: "true"
           volumeMounts:
             - name: kubeconfig-shared
-              mountPath: /app-config/kubeconfig
-              subPath: kubeconfig  # 精确挂载文件
+              mountPath: /app-config/kubeconfig.yaml
+              subPath: kubeconfig.yaml
       imagePullSecrets:
         - name: default-secret
       volumes:

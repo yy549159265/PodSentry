@@ -90,3 +90,16 @@ func GetRollbackMessage(pod *v1.Pod, err string) string {
 		time.Now().Format("2006-01-02 15:04:05"),
 		err)
 }
+
+func GetFirstRestartMessage(cfg *config.Config, pod *v1.Pod) string {
+	return fmt.Sprintf(`
+		POD: %s
+		NAMESPACE: %s
+		TIMESTAMP: %s
+		MESSAGE:  %s
+		`,
+		pod.Name,
+		pod.Namespace,
+		time.Now().Format("2006-01-02 15:04:05"),
+		fmt.Sprintf("pod restarted, after times: %d rollback", cfg.Threshold))
+}

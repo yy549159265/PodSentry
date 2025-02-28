@@ -121,6 +121,7 @@ func (w *PodWatcher) rollback(pod *v1.Pod, podUID string, now time.Time) {
 	} else {
 		w.resetRecord(podUID, now, pod)
 	}
+	w.sendFirestRestartMessage(pod)
 	w.sendRollbackMessage(pod, message)
 }
 
@@ -133,7 +134,10 @@ func (w *PodWatcher) sendRestartMessage(pod *v1.Pod) {
 	msg := notify.GetRestartMessage(w.config, pod)
 	w.sendNotification(msg)
 }
-
+func (w *PodWatcher) sendFirestRestartMessage(pod *v1.Pod) {
+	msg := notify.GetFirstRestartMessage(w.config, pod)
+	w.sendNotification(msg)
+}
 func (w *PodWatcher) sendRollbackMessage(pod *v1.Pod, message string) {
 	msg := notify.GetRollbackMessage(pod, message)
 	w.sendNotification(msg)
