@@ -41,7 +41,7 @@ func LoadConfig() *Config {
 func parseKubeconfig(input string) string {
 	cleand := strings.TrimSpace(input)
 	if cleand == "" {
-		return "/app-config"
+		return "/app-config/kubeconfig.yaml"
 	} else {
 		return cleand
 	}
