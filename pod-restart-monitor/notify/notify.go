@@ -1,8 +1,8 @@
 package notify
 
 import (
-	"PodSentry/pod-restart-monitor/config"
 	"bytes"
+	"e.coding.byd.com/dpc/dpcyunwei/PodSentry/pod-restart-monitor/config"
 	"encoding/json"
 	"fmt"
 	"github.com/sirupsen/logrus"

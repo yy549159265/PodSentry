@@ -1,8 +1,8 @@
 package main
 
 import (
-	"PodSentry/kubeconfig-monitor/config"
-	"PodSentry/kubeconfig-monitor/monitor"
+	"e.coding.byd.com/dpc/dpcyunwei/PodSentry/kubeconfig-monitor/config"
+	"e.coding.byd.com/dpc/dpcyunwei/PodSentry/kubeconfig-monitor/monitor"
 	"github.com/sirupsen/logrus"
 )
 

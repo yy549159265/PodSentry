@@ -1,8 +1,8 @@
 package monitor
 
 import (
-	"PodSentry/pod-restart-monitor/config"
-	"PodSentry/pod-restart-monitor/notify"
+	"e.coding.byd.com/dpc/dpcyunwei/PodSentry/pod-restart-monitor/config"
+	"e.coding.byd.com/dpc/dpcyunwei/PodSentry/pod-restart-monitor/notify"
 	"fmt"
 	"github.com/sirupsen/logrus"
 	v1 "k8s.io/api/core/v1"

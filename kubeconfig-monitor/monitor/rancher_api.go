@@ -1,8 +1,8 @@
 package monitor
 
 import (
-	"PodSentry/kubeconfig-monitor/config"
-	"PodSentry/kubeconfig-monitor/utils"
+	"e.coding.byd.com/dpc/dpcyunwei/PodSentry/kubeconfig-monitor/config"
+	"e.coding.byd.com/dpc/dpcyunwei/PodSentry/kubeconfig-monitor/utils"
 	"encoding/json"
 	"io"
 	"net/http"
@@ -25,7 +25,7 @@ type GenerateKubeConfigOutput struct {
 
 // Step 1: 获取集群列表
 func GetClusterInfoList(cfg *config.Config) ([]ClusterInfo, error) {
-	url := utils.BuildURL("%s/v1/management.cattle.io.clusters?include=id&include=spec.displayName")
+	url := utils.BuildURL("%s/v1/management.cattle.io.clusters?include=id&include=spec.displayName", cfg.RancherServer)
 	resp, err := utils.Get(url, cfg)
 	if err != nil {
 		return nil, err
@@ -44,12 +44,21 @@ func CheckPodExists(clusterInfo ClusterInfo, cfg *config.Config) (bool, error) {
 	if clusterInfo.Spec.DisplayName == "local" {
 		return false, nil
 	}
-	url := utils.BuildURL("%s/k8s/clusters/%s/api/v1/namespaces/%s/pods/%s", cfg.RancherServer, clusterInfo.ID, cfg.PodNamespace, cfg.PodName)
+
+	url := utils.BuildURL("%s/k8s/clusters/%s/api/v1/namespaces/%s/pods/%s",
+		cfg.RancherServer, clusterInfo.ID, cfg.PodNamespace, cfg.PodName)
+
 	resp, err := utils.Get(url, cfg)
 	if err != nil {
-		return false, err
+		// 如果是404错误，直接返回false
+		if resp != nil && resp.StatusCode != http.StatusNotFound {
+			return false, err
+		} else {
+			return false, nil
+		}
 	}
 	defer resp.Body.Close()
+
 	// 200表示存在，404表示不存在
 	return resp.StatusCode == http.StatusOK, nil
 }
@@ -68,7 +77,6 @@ func DownloadKubeConfig(clusterID string, cfg *config.Config) error {
 	if err := json.NewDecoder(resp.Body).Decode(&kubeConfigOutput); err != nil {
 		return err
 	}
-
 	// 创建输出文件
 	outFile, err := os.Create("/data/kubeconfig.yaml")
 	//outFile, err := os.Create("kubeconfig.yaml")

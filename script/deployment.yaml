@@ -16,7 +16,7 @@ spec:
       # 初始化容器
       initContainers:
         - name: kubeconfig-fetcher
-          image:
+          image: swr.cn-south-1.myhuaweicloud.com/dpc-devops/podsentry/kubeconfig-fetcher:1.0
           env:
             - name: RANCHER_SERVER
               value: "https://139.159.191.47:9400"
@@ -39,10 +39,10 @@ spec:
       # 主应用容器
       containers:
         - name: pod-rollback
-          image:
+          image: swr.cn-south-1.myhuaweicloud.com/dpc-devops/podsentry/pod-rollback:1.0
           env:
             - name: MONITOR_NAMESPACE
-              value: ""
+              value: "tools-dev"
             - name: KUBECONFIG_PATH
               value: ""
             - name: TIME_WINDOW
@@ -54,7 +54,7 @@ spec:
             - name: WEBHOOK
               value: ""
             - name: ROLLBACK
-              value: "false"
+              value: "true"
           volumeMounts:
             - name: kubeconfig-shared
               mountPath: /app-config/kubeconfig
@@ -72,6 +72,5 @@ kind: Secret
 metadata:
   name: rancher-api-credentials
   namespace: tools-dev
-type: Opaque
 data:
-  token: dG9rZW4tNzRtcm06ZjQyc3F4N2Z2a202N2pzcmp0ajRkamoyNHJiNmhrbXhobGxnejltYnBjc2h0bTV2amRrdGZu
+  token: ZEc5clpXNHROelJ0Y20wNlpqUXljM0Y0TjJaMmEyMDJOMnB6Y21wMGFqUmthbW95TkhKaU5taHJiWGhvYkd4bmVqbHRZbkJqYzJoMGJUVjJhbVJyZEdadQ==

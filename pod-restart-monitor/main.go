@@ -1,10 +1,10 @@
 package main
 
 import (
-	"PodSentry/internal/k8sclient"
-	"PodSentry/pod-restart-monitor/config"
-	"PodSentry/pod-restart-monitor/monitor"
 	"context"
+	"e.coding.byd.com/dpc/dpcyunwei/PodSentry/internal/k8sclient"
+	"e.coding.byd.com/dpc/dpcyunwei/PodSentry/pod-restart-monitor/config"
+	"e.coding.byd.com/dpc/dpcyunwei/PodSentry/pod-restart-monitor/monitor"
 	"github.com/sirupsen/logrus"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -15,7 +15,10 @@ import (
 
 func main() {
 	cfg := config.LoadConfig()
-	clientset, _ := k8sclient.NewClient(cfg.KubeconfigPath)
+	clientset, err := k8sclient.NewClient(cfg.KubeconfigPath)
+	if err != nil {
+		logrus.Fatalf("Failed to create Kubernetes client: %v", err)
+	}
 	watcher := monitor.NewPodWatcher(clientset, cfg)
 
 	// 优雅退出处理
@@ -46,7 +49,6 @@ func main() {
 					if event.Type == "MODIFIED" {
 						monitor.HandlePodEvent(watcher, pod)
 					}
-
 				}
 			}
 		}(ns)

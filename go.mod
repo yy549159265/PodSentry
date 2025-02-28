@@ -1,12 +1,14 @@
-module PodSentry
+module e.coding.byd.com/dpc/dpcyunwei/PodSentry
 
 go 1.23.0
 
+require (
+		k8s.io/api v0.32.2
+    	k8s.io/apimachinery v0.32.2
+    	k8s.io/client-go v0.32.2
+)
 
 require (
-	k8s.io/api v0.32.2
-	k8s.io/apimachinery v0.32.2
-	k8s.io/client-go v0.32.2
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/emicklei/go-restful/v3 v3.11.0 // indirect
 	github.com/fxamacker/cbor/v2 v2.7.0 // indirect

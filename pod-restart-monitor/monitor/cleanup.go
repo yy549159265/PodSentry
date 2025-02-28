@@ -1,8 +1,8 @@
 package monitor
 
 import (
-	"PodSentry/pod-restart-monitor/config"
 	"context"
+	"e.coding.byd.com/dpc/dpcyunwei/PodSentry/pod-restart-monitor/config"
 	"github.com/sirupsen/logrus"
 	"time"
 )
