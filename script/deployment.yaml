@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubeconfig-monitor  # 更改名称
+  namespace: tools-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kubeconfig-monitor  # 更改标签
+  template:
+    metadata:
+      labels:
+        app: kubeconfig-monitor  # 更改标签
+    spec:
+      # 初始化容器
+      initContainers:
+        - name: kubeconfig-fetcher
+          image: swr.cn-south-1.myhuaweicloud.com/dpc-devops/ops-tools:3.0
+          env:
+            - name: RANCHER_SERVER
+              value: "https://139.159.191.47:9400"
+            - name: RANCHER_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: rancher-api-credentials
+                  key: token
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          volumeMounts:
+            - name: kubeconfig-shared
+              mountPath: /data
+      # 主应用容器
+      containers:
+        - name: main-app
+          image: swr.cn-south-1.myhuaweicloud.com/dpc-devops/ops-tools:3.0
+          env:
+            - name: MONITOR_NAMESPACE
+              value: ""
+            - name: KUBECONFIG_PATH
+              value: ""
+            - name: TIME_WINDOW
+              value: "5m"
+            - name: THRESHOLD
+              value: "3"
+            - name: NOTIFY_TYPE
+              value: "wechat"
+            - name: WEBHOOK
+              value: ""
+            - name: ROLLBACK
+              value: "false"
+            - name: ROLLBACK_LABEL
+              value: ""
+          volumeMounts:
+            - name: kubeconfig-shared
+              mountPath: /app-config/kubeconfig
+              subPath: kubeconfig  # 精确挂载文件
+      imagePullSecrets:
+        - name: default-secret
+      volumes:
+        - name: kubeconfig-shared
+          emptyDir:
+            medium: Memory
+            sizeLimit: 1Mi
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: rancher-api-credentials
+  namespace: tools-dev
+type: Opaque
+data:
+  token: dG9rZW4tNzRtcm06ZjQyc3F4N2Z2a202N2pzcmp0ajRkamoyNHJiNmhrbXhobGxnejltYnBjc2h0bTV2amRrdGZu
