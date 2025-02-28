@@ -44,7 +44,9 @@ func HandlePodEvent(w *PodWatcher, pod *v1.Pod) {
 	now := time.Now()
 
 	w.checkRecord(pod, podUID, now)
-
+	if w.config.Rollback && w.getRecord(podUID).RestartCount == 1 {
+		w.sendFirestRestartMessage(pod)
+	}
 	if record := w.getRecord(podUID); record.RestartCount >= w.config.Threshold {
 		w.handleRestartThreshold(pod, podUID, now)
 	}
@@ -121,7 +123,6 @@ func (w *PodWatcher) rollback(pod *v1.Pod, podUID string, now time.Time) {
 	} else {
 		w.resetRecord(podUID, now, pod)
 	}
-	w.sendFirestRestartMessage(pod)
 	w.sendRollbackMessage(pod, message)
 }
 
