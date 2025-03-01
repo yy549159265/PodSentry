@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubeconfig-monitor
+  namespace: tools-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kubeconfig-monitor
+  template:
+    metadata:
+      labels:
+        app: kubeconfig-monitor
+    spec:
+      containers:
+        - name: pod-rollback
+          image: pod-rollback:1.0
+          imagePullPolicy: Always
+          env:
+            - name: MONITOR_NAMESPACE
+              value: "tools-dev"
+            - name: KUBECONFIG_PATH
+              value: "kubeconfig-path"
+            - name: TIME_WINDOW
+              value: "5m"
+            - name: THRESHOLD
+              value: "3"
+            - name: NOTIFY_TYPE
+              value: "wechat"
+            - name: WEBHOOK
+              value: ""
+            - name: ROLLBACK
+              value: "true"
+          volumeMounts:
+            - name: kubeconfig-path
+              mountPath: /app-config/kubeconfig.yaml
+              subPath: kubeconfig.yaml
+      imagePullSecrets:
+        - name: default-secret
+      volumes:
+        - name: kubeconfig-path
+

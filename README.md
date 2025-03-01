@@ -36,7 +36,7 @@
   `namespace1,namespace2`（多命名空间）
 
 - ​**KUBECONFIG_PATH**​  
-  kubeconfig 文件路径  
+  kubeconfig 文件路径（挂载kubeconfig.yaml路径，默认为 /app-config/kubeconfig.yaml）  
   *示例*: `/app-config/kubeconfig/kubeconfig`
 
 - ​**TIME_WINDOW**​  
