@@ -1,26 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kubeconfig-monitor  # 更改名称
+  name: kubeconfig-monitor
   namespace: tools-dev
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: kubeconfig-monitor  # 更改标签
+      app: kubeconfig-monitor
   template:
     metadata:
       labels:
-        app: kubeconfig-monitor  # 更改标签
+        app: kubeconfig-monitor
     spec:
       # 初始化容器
       initContainers:
         - name: kubeconfig-fetcher
-          image: swr.cn-south-1.myhuaweicloud.com/dpc-devops/podsentry/kubeconfig-fetcher:1.0
+          image: kubeconfig-fetcher:1.0
           imagePullPolicy: Always
           env:
             - name: RANCHER_SERVER
-              value: "https://139.159.191.47:9400"
+              value: ""
             - name: RANCHER_TOKEN
               valueFrom:
                 secretKeyRef:
@@ -40,7 +40,7 @@ spec:
       # 主应用容器
       containers:
         - name: pod-rollback
-          image: swr.cn-south-1.myhuaweicloud.com/dpc-devops/podsentry/pod-rollback:1.0
+          image: pod-rollback:1.0
           imagePullPolicy: Always
           env:
             - name: MONITOR_NAMESPACE
@@ -75,4 +75,4 @@ metadata:
   name: rancher-api-credentials
   namespace: tools-dev
 data:
-  token: ZEc5clpXNHROelJ0Y20wNlpqUXljM0Y0TjJaMmEyMDJOMnB6Y21wMGFqUmthbW95TkhKaU5taHJiWGhvYkd4bmVqbHRZbkJqYzJoMGJUVjJhbVJyZEdadQ==
+  token: base64(base64(rancher-token))
